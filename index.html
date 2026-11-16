@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2563eb">
+<title>Bariklana - Katalog Produk</title>
+<style>
+:root{--green:#2563eb;--dark:#1e3a8a;--bg:#f5f7f6;--card:#fff;--text:#172018;--muted:#6b7280;--danger:#dc2626}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;padding:12px 14px;position:sticky;top:0;z-index:10;box-shadow:0 2px 10px #0002}
+.top{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}.store-logo{width:38px;height:38px;border-radius:12px;object-fit:cover;background:#fff3;border:1px solid #ffffff55;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800}.logo{font-size:20px;font-weight:800}.tag{font-size:12px;opacity:.9}
+.promo{background:#fff;border:1px solid #bfdbfe;border-radius:14px;padding:0;margin-bottom:18px;box-shadow:0 2px 10px #1d4ed80d;overflow:hidden}
+.promo-image{display:block;width:100%;height:135px;object-fit:cover}
+.promo-placeholder{display:flex;align-items:center;justify-content:center;min-height:180px;padding:24px;text-align:center;background:linear-gradient(135deg,#dbeafe,#eff6ff);color:#1e3a8a;font-weight:800}
+@media(min-width:650px){.promo-image{height:190px}}
+button{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer}
+.admin-btn{background:#fff;color:var(--dark)}.wrap{max-width:1000px;margin:auto;padding:14px 12px}
+.hero{background:white;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 2px 12px #0000000a}
+.hero h1{margin:0 0 4px;font-size:21px}.hero p{margin:0;color:var(--muted);font-size:13px}
+.search{width:100%;padding:10px 12px;border:1px solid #dbe1ea;border-radius:10px;margin-top:10px;font-size:14px;background:#f8fafc}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.product{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 4px 18px #0f172a12;border:1px solid #e5e7eb;display:flex;flex-direction:column;transition:.2s ease}.product:hover{transform:translateY(-2px);box-shadow:0 8px 24px #0f172a18}
+.product img{width:100%;aspect-ratio:1/0.9;object-fit:cover;background:#e5e7eb}
+.pbody{padding:9px}.name{font-weight:800;font-size:13px;margin-bottom:4px;line-height:1.25}.price{color:var(--green);font-weight:800;font-size:15px}.stock{font-size:10px;color:var(--muted);margin:4px 0 0}
+.wa{background:#2563eb;color:#fff;width:100%}.wa:disabled{background:#9ca3af;cursor:not-allowed}
+.add-cart{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;width:100%;font-size:15px;min-height:46px;box-shadow:0 5px 14px #2563eb33;transition:.2s ease}.add-cart:hover{transform:translateY(-1px);box-shadow:0 7px 18px #2563eb44}.add-cart:active{transform:translateY(0)}.add-cart:disabled{background:#9ca3af;cursor:not-allowed}.cart-bar{position:fixed;right:16px;bottom:16px;z-index:20;background:#1e3a8a;color:#fff;border-radius:999px;padding:12px 18px;box-shadow:0 5px 20px #0003;font-weight:800;cursor:pointer}.cart-count{background:#fff;color:#1e3a8a;border-radius:999px;padding:2px 7px;margin-left:5px}.cart-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}.cart-item .ci-info{flex:1}.cart-item .ci-name{font-weight:800}.cart-item .ci-price{font-size:13px;color:var(--muted)}.qty{display:flex;align-items:center;gap:8px}.qty button{padding:6px 10px;background:#e5e7eb}.cart-total{font-size:18px;font-weight:800;margin-top:15px;text-align:right}.empty{text-align:center;color:var(--muted);padding:40px 10px}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:15px;z-index:30}.modal.show{display:flex}
+.box{background:white;width:min(520px,100%);max-height:90vh;overflow:auto;border-radius:18px;padding:20px}.box h2{margin-top:0}
+label{font-size:13px;font-weight:700;display:block;margin:12px 0 6px}input,select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:8px;margin-top:16px}.primary{background:var(--green);color:white}.secondary{background:#e5e7eb}.danger{background:#fee2e2;color:#991b1b}
+.admin-list{margin-top:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.admin-item{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;padding:12px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;box-shadow:0 3px 12px #0f172a0b}.admin-item .info{min-width:0}.admin-item button{width:100%}.admin-item .secondary{grid-column:1}.admin-item .danger{grid-column:2}.admin-item img{width:64px;height:64px;object-fit:cover;border-radius:11px;grid-row:1 / span 2}.admin-item img{width:55px;height:55px;object-fit:cover;border-radius:9px}.admin-item .info{flex:1}.small{font-size:12px;color:var(--muted)}
+.notice{padding:10px 12px;border-radius:10px;background:#eff6ff;color:#1d4ed8;font-size:13px;margin-bottom:10px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.hero h1{font-size:24px}}
+
+/* Tampilan katalog & pencarian lebih ringkas */
+@media(max-width:649px){
+  .admin-list{grid-template-columns:1fr}
+  .wrap{padding:12px 10px}
+  .promo{border-radius:11px;margin-bottom:10px}
+  .hero{padding:12px;margin-bottom:10px}
+  .grid{gap:8px}
+  .product{border-radius:11px}
+}
+
+/* Admin toko profesional */
+.store-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px;margin:14px 0}
+.store-card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.store-preview-logo{width:58px;height:58px;border-radius:14px;background:#e2e8f0;border:1px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden}
+.store-preview-logo img{width:100%;height:100%;object-fit:cover}
+.store-meta{flex:1}.store-meta b{font-size:16px}
+.address-box{background:#fff;border:1px solid #e5e7eb;border-radius:11px;padding:10px 12px;margin-top:10px;font-size:13px;color:#475569}
+.address-box strong{display:block;color:#172018;margin-bottom:3px}
+.admin-section-title{font-size:13px;font-weight:800;color:#1e3a8a;text-transform:uppercase;letter-spacing:.04em;margin:18px 0 8px}
+.file-hint{font-size:11px;color:#64748b;margin-top:5px}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand"><div class="store-logo" id="storeLogo">🏪</div><div><div class="logo" id="storeName">Bariklana</div><div class="tag">Katalog Produk • Order via WhatsApp</div></div></div>
+    <button class="admin-btn" onclick="openAdmin()">Admin</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="promo" id="promoBanner">
+    <div id="promoContent" class="promo-placeholder">Banner Promo</div>
+  </section>
+  <section class="hero">
+    <h1>Katalog Produk</h1>
+    <p>Pilih produk dan pesan langsung melalui WhatsApp.</p>
+    <input class="search" id="search" placeholder="Cari produk..." oninput="renderProducts()">
+  </section>
+  <section id="grid" class="grid"></section>
+  <button class="cart-bar" aria-label="Buka keranjang" onclick="openCart()">🛒 <span class="cart-count" id="cartCount">0</span></button>
+</main>
+
+<div class="modal" id="modal">
+  <div class="box" id="modalBox"></div>
+</div>
+
+<script>
+const KEY='bariklana_products_v2', SET='bariklana_settings_v2';
+const defaultProducts=[
+ {id:1,name:'Produk Contoh 1',price:25000,stock:10,img:''},
+ {id:2,name:'Produk Contoh 2',price:45000,stock:8,img:''}
+];
+function readJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch(e){return fallback}}
+let products=readJSON(KEY,[{id:1,name:'Produk Contoh 1',price:25000,stock:10,img:''},{id:2,name:'Produk Contoh 2',price:45000,stock:8,img:''}]);
+let settings=readJSON(SET,{wa:'6281234567890',pin:'1234',storeName:'Bariklana',logo:'',address:'',promoImages:[],promoIndex:0});
+if(!Array.isArray(settings.promoImages)){settings.promoImages=settings.promoImage?[settings.promoImage]:[];delete settings.promoImage}
+let cart=readJSON('bariklana_cart_v2',[]);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(products));return true}catch(e){alert('Penyimpanan penuh. Coba gunakan gambar produk yang lebih kecil.');return false}}
+function saveSet(){try{localStorage.setItem(SET,JSON.stringify(settings));return true}catch(e){alert('Penyimpanan penuh. Gunakan logo yang lebih kecil.');return false}}
+function readImage(file,maxSize=900,quality=.78){return new Promise((resolve,reject)=>{if(!file)return resolve(null);if(!file.type.startsWith('image/'))return reject(new Error('File harus berupa gambar.'));const img=new Image(),r=new FileReader();r.onload=()=>{img.onload=()=>{let w=img.width,h=img.height;if(w>maxSize||h>maxSize){const z=Math.min(maxSize/w,maxSize/h);w=Math.round(w*z);h=Math.round(h*z)}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',quality))};img.onerror=()=>reject(new Error('Gambar tidak dapat dibaca.'));img.src=r.result};r.onerror=()=>reject(new Error('File tidak dapat dibaca.'));r.readAsDataURL(file)})}
+function rupiah(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n)}
+function renderStoreBranding(){
+  document.getElementById('storeName').textContent=settings.storeName||'Bariklana';
+  const logo=document.getElementById('storeLogo');
+  if(settings.logo){logo.innerHTML=`<img src="${settings.logo}" alt="Logo Toko" style="width:100%;height:100%;object-fit:cover;border-radius:11px">`}
+  else logo.textContent='🏪';
+  const promo=document.getElementById('promoContent');
+  const banners=settings.promoImages||[];
+  if(banners.length){
+    settings.promoIndex=(settings.promoIndex||0)%banners.length;
+    promo.className='';
+    promo.innerHTML=`<img class="promo-image" src="${banners[settings.promoIndex]}" alt="Banner Promo ${settings.promoIndex+1}">`;
+    clearInterval(window.promoTimer);
+    if(banners.length>1){window.promoTimer=setInterval(()=>{settings.promoIndex=((settings.promoIndex||0)+1)%banners.length;promo.innerHTML=`<img class="promo-image" src="${banners[settings.promoIndex]}" alt="Banner Promo ${settings.promoIndex+1}">`},3000)}
+  }else{clearInterval(window.promoTimer);promo.className='promo-placeholder';promo.textContent='Banner Promo'}
+}
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function placeholder(name){return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="100%" height="100%" fill="#e5e7eb"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-size="28" font-family="Arial">${name.slice(0,20)}</text></svg>`)}
+
+function renderProducts(){
+ const q=(document.getElementById('search').value||'').toLowerCase();
+ const list=[...products].sort((a,b)=>Number(b.featured)-Number(a.featured)).filter(p=>p.name.toLowerCase().includes(q));
+ const grid=document.getElementById('grid');
+ if(!list.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1">Produk tidak ditemukan.</div>';return}
+ grid.innerHTML=list.map(p=>`
+ <article class="product" onclick="addToCart(${p.id})" style="cursor:${p.stock>0?'pointer':'not-allowed'}">
+  <img src="${p.img||placeholder(p.name)}" alt="${esc(p.name)}">
+  <div class="pbody">
+   <div class="name">${esc(p.name)}</div>
+   <div class="price">${rupiah(p.price)}</div>
+   <div class="stock">${p.stock>0?'Stok tersedia: '+p.stock:'Stok habis'}</div>
+  </div>
+ </article>`).join('');
+}
+function saveCart(){localStorage.setItem('bariklana_cart_v2',JSON.stringify(cart));updateCartCount()}
+function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((a,i)=>a+i.qty,0)}
+function addToCart(id){const p=products.find(x=>x.id===id);if(!p||p.stock<=0)return;const i=cart.find(x=>x.id===id);if(i){if(i.qty<p.stock)i.qty++;else return alert('Jumlah melebihi stok yang tersedia.')}else cart.push({id:p.id,qty:1});saveCart();openCart()}
+function changeQty(id,d){const i=cart.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!i||!p)return;i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);else if(i.qty>p.stock)i.qty=p.stock;saveCart();openCart()}
+function openCart(){const b=document.getElementById('modalBox');if(!cart.length)b.innerHTML='<h2>🛒 Keranjang</h2><div class="empty">Keranjang masih kosong.</div><div class="actions"><button class="secondary" onclick="closeModal()">Tutup</button></div>';else{let total=0;const items=cart.map(i=>{const p=products.find(x=>x.id===i.id);if(!p)return '';const s=p.price*i.qty;total+=s;return `<div class="cart-item"><div class="ci-info"><div class="ci-name">${esc(p.name)}</div><div class="ci-price">${rupiah(p.price)} × ${i.qty} = ${rupiah(s)}</div></div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><b>${i.qty}</b><button onclick="changeQty(${p.id},1)">+</button></div></div>`}).join('');b.innerHTML=`<h2>🛒 Keranjang</h2>${items}<div class="cart-total">Total: ${rupiah(total)}</div><div class="actions"><button class="secondary" onclick="closeModal()">Lanjut Belanja</button><button class="primary" onclick="checkoutCart()">Pesan via WhatsApp</button></div>`}document.getElementById('modal').classList.add('show')}
+function checkoutCart(){if(!cart.length)return;let lines=['Halo Bariklana, saya ingin memesan:',''],total=0;cart.forEach(i=>{const p=products.find(x=>x.id===i.id);if(!p)return;total+=p.price*i.qty;lines.push(`${p.name} | ${i.qty} x ${rupiah(p.price)} = ${rupiah(p.price*i.qty)}`)});lines.push('',`Total: ${rupiah(total)}`);window.open(`https://wa.me/${settings.wa}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function openAdmin(){
+ document.getElementById('modalBox').innerHTML=`<h2>Login Admin</h2>
+ <div class="notice">Masukkan PIN admin untuk mengelola katalog.</div>
+ <label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="12" placeholder="PIN admin">
+ <div class="actions"><button class="secondary" onclick="closeModal()">Batal</button><button class="primary" onclick="login()">Masuk</button></div>`;
+ document.getElementById('modal').classList.add('show');
+ setTimeout(()=>document.getElementById('pin').focus(),100);
+}
+function login(){
+ if(document.getElementById('pin').value!==settings.pin){alert('PIN salah.');return}
+ adminPanel();
+}
+function adminPanel(){
+  document.getElementById('modalBox').innerHTML=`<h2>Dashboard Admin</h2>
+  <div class="store-card"><div class="store-card-head"><div class="store-preview-logo">${settings.logo?`<img src="${settings.logo}" alt="Logo Toko">`:'🏪'}</div><div class="store-meta"><b>${esc(settings.storeName||'Bariklana')}</b><div class="small">Profil toko aktif</div></div><button class="secondary" onclick="storeForm()">Edit Toko</button></div><div class="address-box"><strong>📍 Alamat Toko</strong>${esc(settings.address||'Belum diatur')}</div></div>
+  <div class="notice">Total produk: <b>${products.length}</b> • Total stok: <b>${products.reduce((a,p)=>a+Number(p.stock||0),0)}</b></div>
+  <div class="row"><button class="primary" onclick="productForm()">+ Tambah Produk</button><button class="secondary" onclick="storeForm()">🏪 Toko</button><button class="secondary" onclick="promoForm()">🖼 Banner</button><button class="secondary" onclick="settingsForm()">⚙ Pengaturan</button></div>
+  <div class="admin-section-title">Cari & Kelola Produk</div>
+  <input class="search" id="adminSearch" placeholder="🔎 Cari nama produk untuk ubah harga, stok, atau edit..." oninput="renderAdminProducts()">
+  <div id="adminProductList" class="admin-list"></div>
+  <div class="actions"><button class="secondary" onclick="closeModal()">Tutup</button></div>`;
+  renderAdminProducts();
+}
+function renderAdminProducts(){
+ const box=document.getElementById('adminProductList'); if(!box)return;
+ const q=(document.getElementById('adminSearch').value||'').trim().toLowerCase();
+ const list=products.filter(p=>p.name.toLowerCase().includes(q));
+ box.innerHTML=list.length?list.map(p=>`<div class="admin-item"><img src="${p.img||placeholder(p.name)}"><div class="info"><b>${esc(p.name)}</b><div class="small">${rupiah(p.price)} • Stok ${p.stock}${p.featured?' • ⭐ Teratas':''}</div></div><button class="secondary" onclick="productForm(${p.id})">Edit</button><button class="secondary" onclick="toggleFeatured(${p.id})">${p.featured?'Turunkan':'⭐ Teratas'}</button><button class="danger" onclick="removeProduct(${p.id})">Hapus</button></div>`).join(''):'<div class="empty">Produk tidak ditemukan.</div>';
+}
+function toggleFeatured(id){const p=products.find(x=>x.id===id);if(!p)return;const makeTop=!p.featured;products.forEach(x=>x.featured=false);p.featured=makeTop;if(makeTop)products=[p,...products.filter(x=>x.id!==id)];if(save()){renderProducts();renderAdminProducts()}}
+
+function storeForm(){
+  document.getElementById('modalBox').innerHTML=`<h2>🏪 ${settings.storeName?'Edit Toko':'Tambah Toko'}</h2>
+  <div class="notice">Atur identitas toko yang tampil di katalog.</div>
+  <label>Nama Toko</label><input id="sn" value="${esc(settings.storeName||'Bariklana')}" placeholder="Nama toko">
+  <label>Logo Toko</label><input id="sl" type="file" accept="image/*">
+  <div class="file-hint">Pilih gambar logo toko.</div>
+  <label>Alamat Toko</label><textarea id="sa" rows="3" placeholder="Contoh: Jl. Contoh No. 10, Surabaya" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;resize:vertical">${esc(settings.address||'')}</textarea>
+  <div class="actions"><button class="secondary" onclick="adminPanel()">Kembali</button><button class="primary" onclick="saveStore()">Simpan Toko</button></div>`;
+}
+async function saveStore(){const storeName=document.getElementById('sn').value.trim();const address=document.getElementById('sa').value.trim();const file=document.getElementById('sl').files[0];if(!storeName){alert('Nama toko wajib diisi.');return}try{const logo=file?await readImage(file,700,.78):null;const old={...settings};settings.storeName=storeName;settings.address=address;if(logo)settings.logo=logo;if(!saveSet()){settings=old;return}renderStoreBranding();adminPanel()}catch(e){alert(e.message||'Gagal menyimpan toko.')}}
+function productForm(id){
+ const p=products.find(x=>x.id===id)||{name:'',price:0,stock:0,img:''};
+ document.getElementById('modalBox').innerHTML=`<h2>${id?'Edit':'Tambah'} Produk</h2>
+ <label>Nama Produk</label><input id="pn" value="${esc(p.name)}">
+ <div class="row"><div><label>Harga</label><input id="pp" type="number" min="0" value="${p.price}"></div><div><label>Stok</label><input id="ps" type="number" min="0" value="${p.stock}"></div></div>
+ <label>Gambar Produk</label><input id="pi" type="file" accept="image/*">
+ <div class="actions"><button class="secondary" onclick="adminPanel()">Kembali</button><button class="primary" onclick="saveProduct(${id||0})">Simpan</button></div>`;
+}
+async function saveProduct(id){const name=document.getElementById('pn').value.trim();const price=Number(document.getElementById('pp').value);const stock=Number(document.getElementById('ps').value);if(!name){alert('Nama produk wajib diisi.');return}if(!Number.isFinite(price)||price<0){alert('Harga produk tidak valid.');return}if(!Number.isInteger(stock)||stock<0){alert('Stok produk tidak valid.');return}const file=document.getElementById('pi').files[0];try{const img=file?await readImage(file,900,.78):null;if(id){const p=products.find(x=>x.id===id);if(!p){alert('Produk tidak ditemukan.');return}Object.assign(p,{name,price,stock});if(img)p.img=img}else products.unshift({id:Date.now()+Math.floor(Math.random()*1000),name,price,stock,img:img||''});if(!save())return;renderProducts();adminPanel()}catch(e){alert(e.message||'Gagal menyimpan produk.')}}
+function removeProduct(id){if(confirm('Hapus produk ini?')){products=products.filter(p=>p.id!==id);save();renderProducts();adminPanel()}}
+function promoForm(){
+ const banners=settings.promoImages||[];
+ document.getElementById('modalBox').innerHTML=`<h2>🖼 Banner Promo • 2 Slide</h2><div class="notice">Tambahkan maksimal 2 banner. Jika 2 banner tersedia, otomatis berganti setiap 3 detik.</div>
+ ${[0,1].map(i=>`<div class="store-card"><b>Banner ${i+1}</b><label>Gambar Banner</label><input id="promoFile${i}" type="file" accept="image/*">${banners[i]?`<img src="${banners[i]}" style="display:block;width:100%;height:90px;object-fit:cover;border-radius:10px;margin-top:8px">`:''}</div>`).join('')}
+ <div class="actions"><button class="secondary" onclick="adminPanel()">Kembali</button><button class="danger" onclick="removePromo()">Hapus Semua</button><button class="primary" onclick="savePromo()">Simpan Banner</button></div>`;
+}
+async function savePromo(){try{const old=[...(settings.promoImages||[])];const next=[...old];for(let i=0;i<2;i++){const f=document.getElementById('promoFile'+i).files[0];if(f)next[i]=await readImage(f,1400,.78)}settings.promoImages=next.filter(Boolean).slice(0,2);settings.promoIndex=0;if(!settings.promoImages.length){alert('Pilih minimal 1 banner.');return}if(!saveSet()){settings.promoImages=old;return}renderStoreBranding();adminPanel()}catch(e){alert(e.message||'Gagal menyimpan banner.')}}
+function removePromo(){if(confirm('Hapus semua banner promo?')){const old=settings.promoImages;settings.promoImages=[];settings.promoIndex=0;if(!saveSet()){settings.promoImages=old;return}renderStoreBranding();adminPanel()}}
+function settingsForm(){
+ document.getElementById('modalBox').innerHTML=`<h2>Pengaturan</h2>
+ <label>Nomor WhatsApp Admin</label><input id="wa" value="${esc(settings.wa)}" placeholder="628xxxxxxxxxx">
+ <label>PIN Admin</label><input id="newpin" type="password" value="${esc(settings.pin)}">
+ <div class="small" style="margin-top:8px">Gunakan format nomor internasional tanpa tanda + atau spasi.</div>
+ <div class="actions"><button class="secondary" onclick="adminPanel()">Kembali</button><button class="primary" onclick="saveSettings()">Simpan</button></div>`;
+}
+function saveSettings(){
+  const wa=document.getElementById('wa').value.replace(/\D/g,'');
+  const pin=document.getElementById('newpin').value.trim();
+  if(!wa||!pin){alert('WhatsApp dan PIN wajib diisi.');return}
+  settings.wa=wa;settings.pin=pin;
+  saveSet();alert('Pengaturan tersimpan.');adminPanel();
+}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+renderStoreBranding();
+renderProducts();
+</script>
+</body>
+</html>
