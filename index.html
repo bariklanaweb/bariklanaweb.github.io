@@ -1,219 +1,147 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#2563eb">
-<title>Bariklana - Katalog Produk</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bariklana — Belanja Online</title>
+<meta name="theme-color" content="#155EEF">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--green:#2563eb;--dark:#1e3a8a;--bg:#f5f7f6;--card:#fff;--text:#172018;--muted:#6b7280;--danger:#dc2626}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-header{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;padding:12px 14px;position:sticky;top:0;z-index:10;box-shadow:0 2px 10px #0002}
-.top{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}.store-logo{width:38px;height:38px;border-radius:12px;object-fit:cover;background:#fff3;border:1px solid #ffffff55;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800}.logo{font-size:20px;font-weight:800}.tag{font-size:12px;opacity:.9}
-.promo{background:#fff;border:1px solid #bfdbfe;border-radius:14px;padding:0;margin-bottom:18px;box-shadow:0 2px 10px #1d4ed80d;overflow:hidden}
-.promo-image{display:block;width:100%;height:135px;object-fit:cover}
-.promo-placeholder{display:flex;align-items:center;justify-content:center;min-height:180px;padding:24px;text-align:center;background:linear-gradient(135deg,#dbeafe,#eff6ff);color:#1e3a8a;font-weight:800}
-@media(min-width:650px){.promo-image{height:190px}}
-button{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer}
-.admin-btn{background:#fff;color:var(--dark)}.wrap{max-width:1000px;margin:auto;padding:14px 12px}
-.hero{background:white;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 2px 12px #0000000a}
-.hero h1{margin:0 0 4px;font-size:21px}.hero p{margin:0;color:var(--muted);font-size:13px}
-.search{width:100%;padding:10px 12px;border:1px solid #dbe1ea;border-radius:10px;margin-top:10px;font-size:14px;background:#f8fafc}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.product{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 4px 18px #0f172a12;border:1px solid #e5e7eb;display:flex;flex-direction:column;transition:.2s ease}.product:hover{transform:translateY(-2px);box-shadow:0 8px 24px #0f172a18}
-.product img{width:100%;aspect-ratio:1/0.9;object-fit:cover;background:#e5e7eb}
-.pbody{padding:9px}.name{font-weight:800;font-size:13px;margin-bottom:4px;line-height:1.25}.price{color:var(--green);font-weight:800;font-size:15px}.stock{font-size:10px;color:var(--muted);margin:4px 0 0}
-.wa{background:#2563eb;color:#fff;width:100%}.wa:disabled{background:#9ca3af;cursor:not-allowed}
-.add-cart{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;width:100%;font-size:15px;min-height:46px;box-shadow:0 5px 14px #2563eb33;transition:.2s ease}.add-cart:hover{transform:translateY(-1px);box-shadow:0 7px 18px #2563eb44}.add-cart:active{transform:translateY(0)}.add-cart:disabled{background:#9ca3af;cursor:not-allowed}.cart-bar{position:fixed;right:16px;bottom:16px;z-index:20;background:#1e3a8a;color:#fff;border-radius:999px;padding:12px 18px;box-shadow:0 5px 20px #0003;font-weight:800;cursor:pointer}.cart-count{background:#fff;color:#1e3a8a;border-radius:999px;padding:2px 7px;margin-left:5px}.cart-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}.cart-item .ci-info{flex:1}.cart-item .ci-name{font-weight:800}.cart-item .ci-price{font-size:13px;color:var(--muted)}.qty{display:flex;align-items:center;gap:8px}.qty button{padding:6px 10px;background:#e5e7eb}.cart-total{font-size:18px;font-weight:800;margin-top:15px;text-align:right}.empty{text-align:center;color:var(--muted);padding:40px 10px}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:15px;z-index:30}.modal.show{display:flex}
-.box{background:white;width:min(520px,100%);max-height:90vh;overflow:auto;border-radius:18px;padding:20px}.box h2{margin-top:0}
-label{font-size:13px;font-weight:700;display:block;margin:12px 0 6px}input,select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:8px;margin-top:16px}.primary{background:var(--green);color:white}.secondary{background:#e5e7eb}.danger{background:#fee2e2;color:#991b1b}
-.admin-list{margin-top:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.admin-item{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;padding:12px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;box-shadow:0 3px 12px #0f172a0b}.admin-item .info{min-width:0}.admin-item button{width:100%}.admin-item .secondary{grid-column:1}.admin-item .danger{grid-column:2}.admin-item img{width:64px;height:64px;object-fit:cover;border-radius:11px;grid-row:1 / span 2}.admin-item img{width:55px;height:55px;object-fit:cover;border-radius:9px}.admin-item .info{flex:1}.small{font-size:12px;color:var(--muted)}
-.notice{padding:10px 12px;border-radius:10px;background:#eff6ff;color:#1d4ed8;font-size:13px;margin-bottom:10px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.hero h1{font-size:24px}}
-
-/* Tampilan katalog & pencarian lebih ringkas */
-@media(max-width:649px){
-  .admin-list{grid-template-columns:1fr}
-  .wrap{padding:12px 10px}
-  .promo{border-radius:11px;margin-bottom:10px}
-  .hero{padding:12px;margin-bottom:10px}
-  .grid{gap:8px}
-  .product{border-radius:11px}
-}
-
-/* Admin toko profesional */
-.store-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px;margin:14px 0}
-.store-card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.store-preview-logo{width:58px;height:58px;border-radius:14px;background:#e2e8f0;border:1px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden}
-.store-preview-logo img{width:100%;height:100%;object-fit:cover}
-.store-meta{flex:1}.store-meta b{font-size:16px}
-.address-box{background:#fff;border:1px solid #e5e7eb;border-radius:11px;padding:10px 12px;margin-top:10px;font-size:13px;color:#475569}
-.address-box strong{display:block;color:#172018;margin-bottom:3px}
-.admin-section-title{font-size:13px;font-weight:800;color:#1e3a8a;text-transform:uppercase;letter-spacing:.04em;margin:18px 0 8px}
-.file-hint{font-size:11px;color:#64748b;margin-top:5px}
-
+:root{--green:#155EEF;--green2:#2F80ED;--ink:#18231d;--muted:#68756e;--line:#E5ECF5;--bg:#F5F8FF;--white:#fff;--red:#d83b45}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:11px 15px;background:var(--green);color:white;font-weight:700}button.secondary{background:#EAF2FF;color:var(--green)}button.danger{background:#fff0f0;color:var(--red)}button:disabled{opacity:.5;cursor:not-allowed}.wrap{max-width:1180px;margin:auto;padding:0 18px}.top{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.topin{height:68px;display:flex;align-items:center;gap:18px}.brand{display:flex;align-items:center;gap:9px;font-size:23px;font-weight:900;color:var(--green);letter-spacing:-1px;white-space:nowrap}.brandmark{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#2F80ED,#1246A3);box-shadow:0 4px 10px #155EEF33}.brandmark svg{width:25px;height:25px}.search{flex:1;display:flex;background:#F1F5FF;border-radius:12px;padding:0 12px;align-items:center}.search input{border:0;background:transparent;outline:0;padding:13px;width:100%}.nav{display:flex;gap:8px}.hero{margin:22px 0;background:linear-gradient(110deg,#1246A3,#3B82F6);color:white;border-radius:20px;padding:30px;min-height:150px;display:flex;align-items:center;justify-content:space-between;overflow:hidden}.hero h1{font-size:clamp(24px,4vw,38px);margin:0 0 8px;line-height:1.1}.hero p{margin:0;opacity:.9}.hero .tag{font-size:54px}
+.promo-wrap{margin:18px 0 20px;position:relative}
+.promo-slider{position:relative;overflow:hidden;border-radius:18px;box-shadow:0 8px 24px #123b7a18}
+.promo-track{display:flex;transition:transform .65s cubic-bezier(.22,.75,.25,1);will-change:transform}
+.promo-slide{flex:0 0 100%;min-height:176px;padding:26px 30px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:18px;position:relative;overflow:hidden}
+.promo-slide:after{content:"";position:absolute;width:230px;height:230px;border:34px solid #ffffff20;border-radius:50%;right:9%;top:-95px}
+.promo-slide:nth-child(1){background:linear-gradient(110deg,#1246A3,#3988F6)}
+.promo-slide:nth-child(2){background:linear-gradient(110deg,#083B86,#1769D2)}
+.promo-slide:nth-child(3){background:linear-gradient(110deg,#1D4ED8,#60A5FA)}
+.promo-copy{position:relative;z-index:1;max-width:72%}
+.promo-kicker{display:inline-block;background:#ffffff25;border:1px solid #ffffff55;border-radius:30px;padding:5px 11px;font-size:11px;font-weight:800;letter-spacing:.7px;margin-bottom:9px}
+.promo-slide h2{font-size:clamp(21px,3.5vw,32px);line-height:1.1;margin:0 0 7px}
+.promo-slide p{margin:0;opacity:.92;font-size:13px}
+.promo-art{font-size:clamp(44px,7vw,68px);position:relative;z-index:1;filter:drop-shadow(0 8px 8px #001c5033)}
+.promo-dots{display:flex;justify-content:center;gap:7px;margin-top:10px}
+.promo-dot{width:7px;height:7px;padding:0;border-radius:50%;background:#b8c9e6;min-width:7px}
+.promo-dot.active{width:22px;border-radius:8px;background:#155EEF}
+@media(max-width:760px){.promo-slide{min-height:145px;padding:20px}.promo-copy{max-width:78%}.promo-slide p{font-size:12px}.promo-art{font-size:43px}}
+.section{margin:24px 0}.sectionhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.sectionhead h2{font-size:20px;margin:0}.muted{color:var(--muted)}.stores,.products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.store,.product,.panel{background:white;border:1px solid var(--line);border-radius:15px;overflow:hidden}.store{padding:14px;display:flex;gap:12px;align-items:center;text-align:left;color:inherit}.store img{width:54px;height:54px;border-radius:12px;object-fit:cover;background:#EDF3FF}.store strong{display:block}.store small{color:var(--muted)}.product img{width:100%;aspect-ratio:1.25;object-fit:cover;background:#EDF3FF}.pbody{padding:12px}.pname{font-weight:700;min-height:40px}.price{font-size:17px;font-weight:900;color:var(--green);margin:6px 0}.stock{font-size:12px;color:var(--muted)}.pactions{display:flex;gap:7px;margin-top:10px}.pactions button{flex:1;padding:9px 7px}.empty{padding:30px;text-align:center;color:var(--muted);background:white;border:1px dashed #CBD8EA;border-radius:14px}.hidden{display:none!important}.back{margin:18px 0}.cartbar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#15251c;color:white;border-radius:16px;padding:10px 14px;display:flex;gap:18px;align-items:center;box-shadow:0 8px 30px #102b1c44;z-index:8;min-width:min(92vw,420px);justify-content:space-between}.cartbar button{background:#2563EB}.modal{position:fixed;inset:0;background:#10201688;z-index:20;display:flex;align-items:center;justify-content:center;padding:15px}.dialog{width:min(620px,100%);max-height:90vh;overflow:auto;background:white;border-radius:18px;padding:20px}.dialog h2{margin:0 0 15px}.field{display:grid;gap:5px;margin:10px 0}.field label{font-weight:700;font-size:13px}.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid #D9E4F2;border-radius:9px;outline-color:var(--green)}.row{display:flex;gap:10px}.row>*{flex:1}.close{float:right;background:#EDF3FF;color:#25352b;padding:7px 11px}.adminlayout{display:grid;grid-template-columns:205px 1fr;gap:16px}.side{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;height:max-content}.side button{width:100%;text-align:left;margin:3px 0;background:transparent;color:#34443a}.side button.active{background:#E8F0FF;color:var(--green)}.panel{padding:18px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}.stat{background:#F3F7FF;border-radius:12px;padding:14px}.stat b{font-size:23px;display:block}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:580px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line)}th{font-size:12px;color:var(--muted)}.adminhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.adminhead h2{margin:0}.footer{text-align:center;color:var(--muted);padding:35px 10px 90px}.notice{padding:12px;border-radius:10px;background:#fff8e8;color:#725414;margin:12px 0;font-size:13px}
+@media(max-width:760px){.topin{height:auto;min-height:60px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px;gap:10px}.brand{font-size:20px}.search{order:3;flex-basis:100%}.nav{margin-left:auto}.nav button{padding:9px}.stores,.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hero{padding:22px;margin:14px 0}.hero .tag{font-size:38px}.adminlayout{grid-template-columns:1fr}.side{display:flex;overflow:auto}.side button{white-space:nowrap;width:auto}.stats{grid-template-columns:repeat(2,1fr)}.pbody{padding:10px}.pname{font-size:13px}.sectionhead h2{font-size:18px}}
 </style>
 </head>
 <body>
-<header>
-  <div class="top">
-    <div class="brand"><div class="store-logo" id="storeLogo">🏪</div><div><div class="logo" id="storeName">Bariklana</div><div class="tag">Katalog Produk • Order via WhatsApp</div></div></div>
-    <button class="admin-btn" onclick="openAdmin()">Admin</button>
-  </div>
-</header>
-
+<header class="top"><div class="wrap topin"><div class="brand" onclick="goHome()"><span class="brandmark" aria-label="Logo Bariklana"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 10.5 16 5l11 5.5v13L16 29 5 23.5v-13Z" stroke="white" stroke-width="2" stroke-linejoin="round"/><path d="M5.5 11 16 16.5 26.5 11M16 16.5V28" stroke="white" stroke-width="2" stroke-linejoin="round"/><path d="m11 8 11 5.5" stroke="#F7C85A" stroke-width="2.5" stroke-linecap="round"/></svg></span><span>Bariklana<span style="color:#f4a62a">.</span></span></div><div class="search"><span>⌕</span><input id="search" placeholder="Cari produk atau toko..." oninput="render()"></div><div class="nav"><button class="secondary" onclick="openCart()">Keranjang <span id="cartCount">0</span></button><button onclick="showAdmin()">Admin</button></div></div></header>
 <main class="wrap">
-  <section class="promo" id="promoBanner">
-    <div id="promoContent" class="promo-placeholder">Banner Promo</div>
-  </section>
-  <section class="hero">
-    <h1>Katalog Produk</h1>
-    <p>Pilih produk dan pesan langsung melalui WhatsApp.</p>
-    <input class="search" id="search" placeholder="Cari produk..." oninput="renderProducts()">
-  </section>
-  <section id="grid" class="grid"></section>
-  <button class="cart-bar" aria-label="Buka keranjang" onclick="openCart()">🛒 <span class="cart-count" id="cartCount">0</span></button>
-</main>
-
-<div class="modal" id="modal">
-  <div class="box" id="modalBox"></div>
+<section id="homeView">
+<div class="promo-wrap" aria-label="Banner promo">
+ <div class="promo-slider" id="promoSlider"><div class="promo-track" id="promoTrack">
+  <article class="promo-slide"><div class="promo-copy"><span class="promo-kicker">PROMO SPESIAL BARIKLANA</span><h2>Belanja Hemat Setiap Hari!</h2><p>Temukan kebutuhan pilihan dengan harga bersahabat.</p></div><div class="promo-art">🛍️</div></article>
+  <article class="promo-slide"><div class="promo-copy"><span class="promo-kicker">BELANJA LEBIH PRAKTIS</span><h2>Pilih Produk, Pesan via WhatsApp</h2><p>Checkout mudah dan langsung terhubung ke toko.</p></div><div class="promo-art">💬</div></article>
+  <article class="promo-slide"><div class="promo-copy"><span class="promo-kicker">PENAWARAN MENARIK</span><h2>Produk Favorit Ada di Sini</h2><p>Cek katalog Bariklana dan temukan pilihanmu.</p></div><div class="promo-art">🎁</div></article>
+ </div></div>
+ <div class="promo-dots" id="promoDots"><button class="promo-dot active" aria-label="Promo 1" onclick="showPromo(0)"></button><button class="promo-dot" aria-label="Promo 2" onclick="showPromo(1)"></button><button class="promo-dot" aria-label="Promo 3" onclick="showPromo(2)"></button></div>
 </div>
-
+<div class="section"><div class="sectionhead"><h2 id="productHeading">Produk Pilihan</h2></div><div class="products" id="products"></div></div>
+</section>
+<section id="adminView" class="hidden">
+<div class="back"><button class="secondary" onclick="goHome()">← Kembali ke katalog</button></div>
+<div id="adminLogin" class="panel" style="max-width:430px;margin:30px auto"><div style="text-align:center;font-size:34px">🔐</div><h2 style="text-align:center">Login Admin</h2><p class="muted" style="text-align:center">Masukkan PIN Admin untuk membuka seluruh pengaturan toko.</p><div class="field"><label>PIN Admin</label><input id="loginPin" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" maxlength="12" placeholder="Masukkan PIN awal: 1234" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onkeydown="if(event.key==='Enter')login()"></div><button style="width:100%" onclick="login()">Masuk Admin</button><p class="muted" id="loginMsg" style="text-align:center"></p></div>
+<div id="adminApp" class="hidden"><div class="adminhead" style="margin:12px 0"><div><h2>Panel Admin Bariklana</h2><span class="muted">Semua pengaturan dalam satu halaman</span></div><button class="danger" onclick="logout()">Keluar</button></div><div class="panel" id="adminContent"></div></div>
+</section>
+</main>
+<div class="footer">© 2026 Bariklana · Belanja praktis, checkout via WhatsApp.</div>
+<div id="cartFloat" class="cartbar hidden"><span><b id="floatCount">0</b> barang · <b id="floatTotal">Rp0</b></span><button onclick="openCart()">Lihat Keranjang</button></div>
+<div id="modal" class="modal hidden" onclick="if(event.target===this)closeModal()"><div class="dialog"><button class="close" onclick="closeModal()">✕</button><div id="modalContent"></div></div></div>
 <script>
-const KEY='bariklana_products_v2', SET='bariklana_settings_v2';
-const defaultProducts=[
- {id:1,name:'Produk Contoh 1',price:25000,stock:10,img:''},
- {id:2,name:'Produk Contoh 2',price:45000,stock:8,img:''}
-];
-function readJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch(e){return fallback}}
-let products=readJSON(KEY,[{id:1,name:'Produk Contoh 1',price:25000,stock:10,img:''},{id:2,name:'Produk Contoh 2',price:45000,stock:8,img:''}]);
-let settings=readJSON(SET,{wa:'6281234567890',pin:'1234',storeName:'Bariklana',logo:'',address:'',promoImages:[],promoIndex:0});
-if(!Array.isArray(settings.promoImages)){settings.promoImages=settings.promoImage?[settings.promoImage]:[];delete settings.promoImage}
-let cart=readJSON('bariklana_cart_v2',[]);
-function save(){try{localStorage.setItem(KEY,JSON.stringify(products));return true}catch(e){alert('Penyimpanan penuh. Coba gunakan gambar produk yang lebih kecil.');return false}}
-function saveSet(){try{localStorage.setItem(SET,JSON.stringify(settings));return true}catch(e){alert('Penyimpanan penuh. Gunakan logo yang lebih kecil.');return false}}
-function readImage(file,maxSize=900,quality=.78){return new Promise((resolve,reject)=>{if(!file)return resolve(null);if(!file.type.startsWith('image/'))return reject(new Error('File harus berupa gambar.'));const img=new Image(),r=new FileReader();r.onload=()=>{img.onload=()=>{let w=img.width,h=img.height;if(w>maxSize||h>maxSize){const z=Math.min(maxSize/w,maxSize/h);w=Math.round(w*z);h=Math.round(h*z)}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',quality))};img.onerror=()=>reject(new Error('Gambar tidak dapat dibaca.'));img.src=r.result};r.onerror=()=>reject(new Error('File tidak dapat dibaca.'));r.readAsDataURL(file)})}
-function rupiah(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n)}
-function renderStoreBranding(){
-  document.getElementById('storeName').textContent=settings.storeName||'Bariklana';
-  const logo=document.getElementById('storeLogo');
-  if(settings.logo){logo.innerHTML=`<img src="${settings.logo}" alt="Logo Toko" style="width:100%;height:100%;object-fit:cover;border-radius:11px">`}
-  else logo.textContent='🏪';
-  const promo=document.getElementById('promoContent');
-  const banners=settings.promoImages||[];
-  if(banners.length){
-    settings.promoIndex=(settings.promoIndex||0)%banners.length;
-    promo.className='';
-    promo.innerHTML=`<img class="promo-image" src="${banners[settings.promoIndex]}" alt="Banner Promo ${settings.promoIndex+1}">`;
-    clearInterval(window.promoTimer);
-    if(banners.length>1){window.promoTimer=setInterval(()=>{settings.promoIndex=((settings.promoIndex||0)+1)%banners.length;promo.innerHTML=`<img class="promo-image" src="${banners[settings.promoIndex]}" alt="Banner Promo ${settings.promoIndex+1}">`},3000)}
-  }else{clearInterval(window.promoTimer);promo.className='promo-placeholder';promo.textContent='Banner Promo'}
-}
+const SUPABASE_URL="https://YOUR_PROJECT.supabase.co";
+const SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_KEY";
+const ADMIN_EMAIL="admin@bariklana.local"; // Email internal akun admin Supabase
+let db=null,session=null,stores=[],products=[],orders=[],cart=[],activeAdminTab="dashboard";
+const money=n=>"Rp"+Number(n||0).toLocaleString("id-ID");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const img=(url)=>url||"https://placehold.co/500x360?text=Produk";
+function configured(){return !SUPABASE_URL.includes("YOUR_")&&!SUPABASE_ANON_KEY.includes("YOUR_")}
 
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function placeholder(name){return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="100%" height="100%" fill="#e5e7eb"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-size="28" font-family="Arial">${name.slice(0,20)}</text></svg>`)}
-
-function renderProducts(){
- const q=(document.getElementById('search').value||'').toLowerCase();
- const list=[...products].sort((a,b)=>Number(b.featured)-Number(a.featured)).filter(p=>p.name.toLowerCase().includes(q));
- const grid=document.getElementById('grid');
- if(!list.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1">Produk tidak ditemukan.</div>';return}
- grid.innerHTML=list.map(p=>`
- <article class="product" onclick="addToCart(${p.id})" style="cursor:${p.stock>0?'pointer':'not-allowed'}">
-  <img src="${p.img||placeholder(p.name)}" alt="${esc(p.name)}">
-  <div class="pbody">
-   <div class="name">${esc(p.name)}</div>
-   <div class="price">${rupiah(p.price)}</div>
-   <div class="stock">${p.stock>0?'Stok tersedia: '+p.stock:'Stok habis'}</div>
-  </div>
- </article>`).join('');
+let promoIndex=0,promoTimer=null;
+function showPromo(index){
+ const track=document.getElementById("promoTrack");if(!track)return;
+ const slides=track.children.length;promoIndex=(index+slides)%slides;
+ track.style.transform=`translateX(-${promoIndex*100}%)`;
+ document.querySelectorAll(".promo-dot").forEach((dot,i)=>dot.classList.toggle("active",i===promoIndex));
 }
-function saveCart(){localStorage.setItem('bariklana_cart_v2',JSON.stringify(cart));updateCartCount()}
-function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((a,i)=>a+i.qty,0)}
-function addToCart(id){const p=products.find(x=>x.id===id);if(!p||p.stock<=0)return;const i=cart.find(x=>x.id===id);if(i){if(i.qty<p.stock)i.qty++;else return alert('Jumlah melebihi stok yang tersedia.')}else cart.push({id:p.id,qty:1});saveCart();openCart()}
-function changeQty(id,d){const i=cart.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!i||!p)return;i.qty+=d;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);else if(i.qty>p.stock)i.qty=p.stock;saveCart();openCart()}
-function openCart(){const b=document.getElementById('modalBox');if(!cart.length)b.innerHTML='<h2>🛒 Keranjang</h2><div class="empty">Keranjang masih kosong.</div><div class="actions"><button class="secondary" onclick="closeModal()">Tutup</button></div>';else{let total=0;const items=cart.map(i=>{const p=products.find(x=>x.id===i.id);if(!p)return '';const s=p.price*i.qty;total+=s;return `<div class="cart-item"><div class="ci-info"><div class="ci-name">${esc(p.name)}</div><div class="ci-price">${rupiah(p.price)} × ${i.qty} = ${rupiah(s)}</div></div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><b>${i.qty}</b><button onclick="changeQty(${p.id},1)">+</button></div></div>`}).join('');b.innerHTML=`<h2>🛒 Keranjang</h2>${items}<div class="cart-total">Total: ${rupiah(total)}</div><div class="actions"><button class="secondary" onclick="closeModal()">Lanjut Belanja</button><button class="primary" onclick="checkoutCart()">Pesan via WhatsApp</button></div>`}document.getElementById('modal').classList.add('show')}
-function checkoutCart(){if(!cart.length)return;let lines=['Halo Bariklana, saya ingin memesan:',''],total=0;cart.forEach(i=>{const p=products.find(x=>x.id===i.id);if(!p)return;total+=p.price*i.qty;lines.push(`${p.name} | ${i.qty} x ${rupiah(p.price)} = ${rupiah(p.price*i.qty)}`)});lines.push('',`Total: ${rupiah(total)}`);window.open(`https://wa.me/${settings.wa}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank')}
-function closeModal(){document.getElementById('modal').classList.remove('show')}
-function openAdmin(){
- document.getElementById('modalBox').innerHTML=`<h2>Login Admin</h2>
- <div class="notice">Masukkan PIN admin untuk mengelola katalog.</div>
- <label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="12" placeholder="PIN admin">
- <div class="actions"><button class="secondary" onclick="closeModal()">Batal</button><button class="primary" onclick="login()">Masuk</button></div>`;
- document.getElementById('modal').classList.add('show');
- setTimeout(()=>document.getElementById('pin').focus(),100);
+function startPromoSlider(){
+ if(promoTimer)clearInterval(promoTimer);
+ if(!document.getElementById("promoTrack"))return;
+ promoTimer=setInterval(()=>showPromo(promoIndex+1),5000);
 }
-function login(){
- if(document.getElementById('pin').value!==settings.pin){alert('PIN salah.');return}
- adminPanel();
+async function init(){if(configured()){db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);const {data}=await db.auth.getSession();session=data.session;db.auth.onAuthStateChange((_e,s)=>{session=s;updateAdminAuth()});await loadData()}else{demoData()}render();updateAdminAuth();startPromoSlider()}
+function demoData(){stores=[{id:"demo1",name:"Bariklana Mart",address:"Alamat toko dapat diatur admin",whatsapp:"081217649207",image_url:"",description:"Belanja kebutuhan harian"}];products=[{id:"p1",store_id:"demo1",name:"Beras Premium 5 Kg",price:75000,stock:20,image_url:"",category:"Sembako"},{id:"p2",store_id:"demo1",name:"Minyak Goreng 1 L",price:18000,stock:35,image_url:"",category:"Sembako"},{id:"p3",store_id:"demo1",name:"Gula Pasir 1 Kg",price:17000,stock:18,image_url:"",category:"Sembako"},{id:"p4",store_id:"demo1",name:"Air Mineral 600 ml",price:4000,stock:50,image_url:"",category:"Minuman"}]}
+async function loadData(){if(!db)return;let [s,p]=await Promise.all([db.from("stores").select("*").eq("is_active",true).order("created_at",{ascending:false}),db.from("products").select("*").eq("is_active",true).order("created_at",{ascending:false})]);if(!s.error)stores=s.data||[];if(!p.error)products=p.data||[]}
+function render(){let q=(document.getElementById("search")?.value||"").toLowerCase();let pp=products.filter(p=>!q||p.name.toLowerCase().includes(q)||String(p.category||"").toLowerCase().includes(q)||String(stores.find(s=>s.id===p.store_id)?.name||"").toLowerCase().includes(q));document.getElementById("productHeading").textContent=q?"Hasil Pencarian":"Produk Pilihan";document.getElementById("products").innerHTML=pp.map(p=>`<article class="product"><img src="${esc(img(p.image_url))}" alt=""><div class="pbody"><div class="pname">${esc(p.name)}</div><div class="muted" style="font-size:12px">${esc(stores.find(s=>s.id===p.store_id)?.name||"Toko")}</div><div class="price">${money(p.price)}</div><div class="stock">${Number(p.stock)>0?"Stok tersedia: "+p.stock:"Stok habis"}</div><div class="pactions"><button ${Number(p.stock)<=0?"disabled":""} onclick="addCart('${p.id}')">+ Keranjang</button></div></div></article>`).join("")||'<div class="empty" style="grid-column:1/-1">Produk belum tersedia. Silakan coba kata kunci lain.</div>';updateCart()}
+function addCart(id){let p=products.find(x=>x.id===id);if(!p)return;let existing=cart.find(x=>x.id===id);if(existing){if(existing.qty>=p.stock)return alert("Jumlah melebihi stok.");existing.qty++}else cart.push({id:p.id,qty:1});updateCart()}
+function updateCart(){let count=cart.reduce((a,x)=>a+x.qty,0),total=cart.reduce((a,x)=>a+x.qty*(products.find(p=>p.id===x.id)?.price||0),0);document.getElementById("cartCount").textContent=count;document.getElementById("floatCount").textContent=count;document.getElementById("floatTotal").textContent=money(total);document.getElementById("cartFloat").classList.toggle("hidden",!count)}
+function openCart(){if(!cart.length)return alert("Keranjang masih kosong.");let rows=cart.map(x=>{let p=products.find(p=>p.id===x.id);return `<div class="row" style="align-items:center;border-bottom:1px solid #eee;padding:10px 0"><div><b>${esc(p.name)}</b><div class="muted">${money(p.price)} · Stok ${p.stock}</div></div><div style="display:flex;align-items:center;gap:7px;justify-content:flex-end"><button class="secondary" onclick="changeQty('${x.id}',-1)">−</button>${x.qty}<button class="secondary" onclick="changeQty('${x.id}',1)">+</button></div></div>`}).join("");let total=cart.reduce((a,x)=>a+x.qty*products.find(p=>p.id===x.id).price,0);showModal(`<h2>Keranjang Belanja</h2>${rows}<h3 style="text-align:right">Total: ${money(total)}</h3><div class="field"><label>Nama pemesan</label><input id="buyerName" placeholder="Nama Anda"></div><div class="field"><label>Alamat pengantaran / catatan</label><textarea id="buyerAddress" rows="2" placeholder="Alamat lengkap atau ambil di toko"></textarea></div><button style="width:100%" onclick="checkout()">Checkout via WhatsApp</button>`)}
+function changeQty(id,d){let x=cart.find(x=>x.id===id),p=products.find(p=>p.id===id);if(!x)return;x.qty+=d;if(x.qty<=0)cart=cart.filter(z=>z.id!==id);if(x&&x.qty>p.stock){x.qty=p.stock;alert("Jumlah dibatasi sesuai stok.")}openCart();updateCart()}
+async function checkout(){let name=document.getElementById("buyerName").value.trim(),address=document.getElementById("buyerAddress").value.trim();if(!name)return alert("Isi nama pemesan.");let storeIds=[...new Set(cart.map(x=>products.find(p=>p.id===x.id).store_id))];if(storeIds.length!==1)return alert("Keranjang hanya dapat berisi produk dari satu toko. Kosongkan keranjang untuk memilih toko lain.");let store=stores.find(s=>s.id===storeIds[0]);if(!store?.whatsapp)return alert("Nomor WhatsApp toko belum diatur.");let items=cart.map(x=>({product_id:x.id,quantity:x.qty}));let total=cart.reduce((a,x)=>a+x.qty*products.find(p=>p.id===x.id).price,0);
+if(db){let {data,error}=await db.rpc("checkout_order",{p_store_id:store.id,p_customer_name:name,p_customer_address:address,p_items:items});if(error)return alert("Checkout gagal: "+error.message);await loadData();} 
+let lines=cart.map(x=>{let p=products.find(p=>p.id===x.id);return `- ${p.name} x${x.qty} = ${money(p.price*x.qty)}`}).join("%0A");let msg=`Halo ${store.name}, saya ingin memesan:%0A${encodeURIComponent(lines)}%0A%0ATotal: ${money(total)}%0ANama: ${encodeURIComponent(name)}%0AAlamat/Catatan: ${encodeURIComponent(address)}%0AMohon konfirmasi pesanan saya.`;let phone=store.whatsapp.replace(/\D/g,"").replace(/^0/,"62");cart=[];closeModal();render();window.open(`https://wa.me/${phone}?text=${msg}`,"_blank")}
+function showModal(html){document.getElementById("modalContent").innerHTML=html;document.getElementById("modal").classList.remove("hidden")}function closeModal(){document.getElementById("modal").classList.add("hidden")}
+function goHome(){document.getElementById("homeView").classList.remove("hidden");document.getElementById("adminView").classList.add("hidden")}
+function showAdmin(){document.getElementById("homeView").classList.add("hidden");document.getElementById("adminView").classList.remove("hidden");updateAdminAuth()}
+function updateAdminAuth(){
+ const loginBox=document.getElementById("adminLogin"),app=document.getElementById("adminApp");
+ loginBox.classList.toggle("hidden",!!session);app.classList.toggle("hidden",!session);
+ if(!session){const msg=document.getElementById("loginMsg");if(msg&&!db)msg.textContent="Hubungkan URL dan Anon Key Supabase pada file HTML terlebih dahulu.";}
+ if(session)renderAdminPage();
 }
-function adminPanel(){
-  document.getElementById('modalBox').innerHTML=`<h2>Dashboard Admin</h2>
-  <div class="store-card"><div class="store-card-head"><div class="store-preview-logo">${settings.logo?`<img src="${settings.logo}" alt="Logo Toko">`:'🏪'}</div><div class="store-meta"><b>${esc(settings.storeName||'Bariklana')}</b><div class="small">Profil toko aktif</div></div><button class="secondary" onclick="storeForm()">Edit Toko</button></div><div class="address-box"><strong>📍 Alamat Toko</strong>${esc(settings.address||'Belum diatur')}</div></div>
-  <div class="notice">Total produk: <b>${products.length}</b> • Total stok: <b>${products.reduce((a,p)=>a+Number(p.stock||0),0)}</b></div>
-  <div class="row"><button class="primary" onclick="productForm()">+ Tambah Produk</button><button class="secondary" onclick="storeForm()">🏪 Toko</button><button class="secondary" onclick="promoForm()">🖼 Banner</button><button class="secondary" onclick="settingsForm()">⚙ Pengaturan</button></div>
-  <div class="admin-section-title">Cari & Kelola Produk</div>
-  <input class="search" id="adminSearch" placeholder="🔎 Cari nama produk untuk ubah harga, stok, atau edit..." oninput="renderAdminProducts()">
-  <div id="adminProductList" class="admin-list"></div>
-  <div class="actions"><button class="secondary" onclick="closeModal()">Tutup</button></div>`;
-  renderAdminProducts();
+async function login(){
+ const pin=document.getElementById("loginPin").value.trim(),msg=document.getElementById("loginMsg");
+ if(!/^\d{4,12}$/.test(pin)){msg.textContent="PIN harus terdiri dari 4–12 angka.";return}
+ if(!db){msg.textContent="Login belum aktif. Isi konfigurasi Supabase URL dan Anon Key di file HTML.";return}
+ msg.textContent="Memeriksa PIN...";
+ const {data,error}=await db.auth.signInWithPassword({email:ADMIN_EMAIL,password:pin});
+ if(error){msg.textContent="PIN salah atau akun Admin belum dibuat di Supabase Authentication.";return}
+ session=data.session;document.getElementById("loginPin").value="";updateAdminAuth();
 }
-function renderAdminProducts(){
- const box=document.getElementById('adminProductList'); if(!box)return;
- const q=(document.getElementById('adminSearch').value||'').trim().toLowerCase();
- const list=products.filter(p=>p.name.toLowerCase().includes(q));
- box.innerHTML=list.length?list.map(p=>`<div class="admin-item"><img src="${p.img||placeholder(p.name)}"><div class="info"><b>${esc(p.name)}</b><div class="small">${rupiah(p.price)} • Stok ${p.stock}${p.featured?' • ⭐ Teratas':''}</div></div><button class="secondary" onclick="productForm(${p.id})">Edit</button><button class="secondary" onclick="toggleFeatured(${p.id})">${p.featured?'Turunkan':'⭐ Teratas'}</button><button class="danger" onclick="removeProduct(${p.id})">Hapus</button></div>`).join(''):'<div class="empty">Produk tidak ditemukan.</div>';
+async function changeAdminPin(){
+ const pin=document.getElementById("newAdminPin").value.trim(),confirmPin=document.getElementById("confirmAdminPin").value.trim(),msg=document.getElementById("pinChangeMsg");
+ if(!/^\d{4,12}$/.test(pin)){msg.textContent="PIN harus terdiri dari 4–12 angka.";return}
+ if(pin!==confirmPin){msg.textContent="Konfirmasi PIN tidak sama.";return}
+ if(!db||!session){msg.textContent="Sesi Admin tidak aktif. Silakan login kembali.";return}
+ msg.textContent="Menyimpan PIN baru...";
+ const {error}=await db.auth.updateUser({password:pin});
+ if(error){msg.textContent="PIN gagal diubah: "+error.message;return}
+ document.getElementById("newAdminPin").value="";document.getElementById("confirmAdminPin").value="";
+ msg.textContent="PIN Admin berhasil diubah. Gunakan PIN baru untuk login berikutnya.";
 }
-function toggleFeatured(id){const p=products.find(x=>x.id===id);if(!p)return;const makeTop=!p.featured;products.forEach(x=>x.featured=false);p.featured=makeTop;if(makeTop)products=[p,...products.filter(x=>x.id!==id)];if(save()){renderProducts();renderAdminProducts()}}
-
-function storeForm(){
-  document.getElementById('modalBox').innerHTML=`<h2>🏪 ${settings.storeName?'Edit Toko':'Tambah Toko'}</h2>
-  <div class="notice">Atur identitas toko yang tampil di katalog.</div>
-  <label>Nama Toko</label><input id="sn" value="${esc(settings.storeName||'Bariklana')}" placeholder="Nama toko">
-  <label>Logo Toko</label><input id="sl" type="file" accept="image/*">
-  <div class="file-hint">Pilih gambar logo toko.</div>
-  <label>Alamat Toko</label><textarea id="sa" rows="3" placeholder="Contoh: Jl. Contoh No. 10, Surabaya" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;resize:vertical">${esc(settings.address||'')}</textarea>
-  <div class="actions"><button class="secondary" onclick="adminPanel()">Kembali</button><button class="primary" onclick="saveStore()">Simpan Toko</button></div>`;
+async function logout(){if(db)await db.auth.signOut();session=null;updateAdminAuth()}
+async function adminTab(){return renderAdminPage()}
+async function renderAdminPage(){
+ if(!session)return;
+ await loadAdminData();
+ const totalStock=products.reduce((a,p)=>a+Number(p.stock),0);
+ document.getElementById("adminContent").innerHTML=`
+ <section class="section"><div class="adminhead"><h2>Dashboard</h2><button class="secondary" onclick="renderAdminPage()">↻ Perbarui</button></div>
+ <div class="stats"><div class="stat"><span class="muted">Total toko</span><b>${stores.length}</b></div><div class="stat"><span class="muted">Total produk</span><b>${products.length}</b></div><div class="stat"><span class="muted">Total stok</span><b>${totalStock}</b></div><div class="stat"><span class="muted">Pesanan</span><b>${orders.length}</b></div></div>
+ <div class="notice">Stok berkurang otomatis saat checkout berhasil dicatat. Pastikan pesanan WhatsApp dikonfirmasi; pesanan batal perlu proses pengembalian stok.</div></section>
+ <section class="section"><div class="adminhead"><h2>Kelola Toko</h2><button onclick="storeForm()">+ Tambah Toko</button></div><div class="tablewrap"><table><thead><tr><th>Nama toko</th><th>WhatsApp</th><th>Alamat</th><th>Aksi</th></tr></thead><tbody>${stores.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.whatsapp)}</td><td>${esc(s.address)}</td><td><button class="secondary" onclick="storeForm('${s.id}')">Edit</button> <button class="danger" onclick="deleteStore('${s.id}')">Hapus</button></td></tr>`).join("")||'<tr><td colspan="4">Belum ada toko.</td></tr>'}</tbody></table></div></section>
+ <section class="section"><div class="adminhead"><h2>Kelola Produk</h2><button onclick="productForm()">+ Tambah Produk</button></div><div class="tablewrap"><table><thead><tr><th>Produk</th><th>Toko</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${products.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(stores.find(s=>s.id===p.store_id)?.name||"-")}</td><td>${money(p.price)}</td><td>${p.stock}</td><td><button class="secondary" onclick="productForm('${p.id}')">Edit</button> <button class="danger" onclick="deleteProduct('${p.id}')">Hapus</button></td></tr>`).join("")||'<tr><td colspan="5">Belum ada produk.</td></tr>'}</tbody></table></div></section>
+ <section class="section"><div class="adminhead"><h2>Pesanan</h2><span class="muted">Riwayat terbaru</span></div><div class="tablewrap"><table><thead><tr><th>Tanggal</th><th>Pemesan</th><th>Toko</th><th>Total</th><th>Status</th></tr></thead><tbody>${orders.map(o=>`<tr><td>${new Date(o.created_at).toLocaleString("id-ID")}</td><td>${esc(o.customer_name)}</td><td>${esc(stores.find(s=>s.id===o.store_id)?.name||"-")}</td><td>${money(o.total)}</td><td>${esc(o.status)}</td></tr>`).join("")||'<tr><td colspan="5">Belum ada pesanan.</td></tr>'}</tbody></table></div></section>
+ <section class="section"><div class="adminhead"><h2>Pengaturan PIN Admin</h2></div><div class="panel" style="background:#F7FAFF"><p class="muted">Ganti PIN login Admin kapan saja. Gunakan minimal 4 angka dan simpan PIN baru dengan aman.</p><div class="row"><div class="field"><label>PIN baru</label><input id="newAdminPin" type="password" inputmode="numeric" maxlength="12" placeholder="4–12 angka" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div><div class="field"><label>Ulangi PIN baru</label><input id="confirmAdminPin" type="password" inputmode="numeric" maxlength="12" placeholder="Ulangi PIN" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div><button onclick="changeAdminPin()">Simpan PIN Baru</button><p class="muted" id="pinChangeMsg" aria-live="polite"></p></div></section>`;
 }
-async function saveStore(){const storeName=document.getElementById('sn').value.trim();const address=document.getElementById('sa').value.trim();const file=document.getElementById('sl').files[0];if(!storeName){alert('Nama toko wajib diisi.');return}try{const logo=file?await readImage(file,700,.78):null;const old={...settings};settings.storeName=storeName;settings.address=address;if(logo)settings.logo=logo;if(!saveSet()){settings=old;return}renderStoreBranding();adminPanel()}catch(e){alert(e.message||'Gagal menyimpan toko.')}}
-function productForm(id){
- const p=products.find(x=>x.id===id)||{name:'',price:0,stock:0,img:''};
- document.getElementById('modalBox').innerHTML=`<h2>${id?'Edit':'Tambah'} Produk</h2>
- <label>Nama Produk</label><input id="pn" value="${esc(p.name)}">
- <div class="row"><div><label>Harga</label><input id="pp" type="number" min="0" value="${p.price}"></div><div><label>Stok</label><input id="ps" type="number" min="0" value="${p.stock}"></div></div>
- <label>Gambar Produk</label><input id="pi" type="file" accept="image/*">
- <div class="actions"><button class="secondary" onclick="adminPanel()">Kembali</button><button class="primary" onclick="saveProduct(${id||0})">Simpan</button></div>`;
-}
-async function saveProduct(id){const name=document.getElementById('pn').value.trim();const price=Number(document.getElementById('pp').value);const stock=Number(document.getElementById('ps').value);if(!name){alert('Nama produk wajib diisi.');return}if(!Number.isFinite(price)||price<0){alert('Harga produk tidak valid.');return}if(!Number.isInteger(stock)||stock<0){alert('Stok produk tidak valid.');return}const file=document.getElementById('pi').files[0];try{const img=file?await readImage(file,900,.78):null;if(id){const p=products.find(x=>x.id===id);if(!p){alert('Produk tidak ditemukan.');return}Object.assign(p,{name,price,stock});if(img)p.img=img}else products.unshift({id:Date.now()+Math.floor(Math.random()*1000),name,price,stock,img:img||''});if(!save())return;renderProducts();adminPanel()}catch(e){alert(e.message||'Gagal menyimpan produk.')}}
-function removeProduct(id){if(confirm('Hapus produk ini?')){products=products.filter(p=>p.id!==id);save();renderProducts();adminPanel()}}
-function promoForm(){
- const banners=settings.promoImages||[];
- document.getElementById('modalBox').innerHTML=`<h2>🖼 Banner Promo • 2 Slide</h2><div class="notice">Tambahkan maksimal 2 banner. Jika 2 banner tersedia, otomatis berganti setiap 3 detik.</div>
- ${[0,1].map(i=>`<div class="store-card"><b>Banner ${i+1}</b><label>Gambar Banner</label><input id="promoFile${i}" type="file" accept="image/*">${banners[i]?`<img src="${banners[i]}" style="display:block;width:100%;height:90px;object-fit:cover;border-radius:10px;margin-top:8px">`:''}</div>`).join('')}
- <div class="actions"><button class="secondary" onclick="adminPanel()">Kembali</button><button class="danger" onclick="removePromo()">Hapus Semua</button><button class="primary" onclick="savePromo()">Simpan Banner</button></div>`;
-}
-async function savePromo(){try{const old=[...(settings.promoImages||[])];const next=[...old];for(let i=0;i<2;i++){const f=document.getElementById('promoFile'+i).files[0];if(f)next[i]=await readImage(f,1400,.78)}settings.promoImages=next.filter(Boolean).slice(0,2);settings.promoIndex=0;if(!settings.promoImages.length){alert('Pilih minimal 1 banner.');return}if(!saveSet()){settings.promoImages=old;return}renderStoreBranding();adminPanel()}catch(e){alert(e.message||'Gagal menyimpan banner.')}}
-function removePromo(){if(confirm('Hapus semua banner promo?')){const old=settings.promoImages;settings.promoImages=[];settings.promoIndex=0;if(!saveSet()){settings.promoImages=old;return}renderStoreBranding();adminPanel()}}
-function settingsForm(){
- document.getElementById('modalBox').innerHTML=`<h2>Pengaturan</h2>
- <label>Nomor WhatsApp Admin</label><input id="wa" value="${esc(settings.wa)}" placeholder="628xxxxxxxxxx">
- <label>PIN Admin</label><input id="newpin" type="password" value="${esc(settings.pin)}">
- <div class="small" style="margin-top:8px">Gunakan format nomor internasional tanpa tanda + atau spasi.</div>
- <div class="actions"><button class="secondary" onclick="adminPanel()">Kembali</button><button class="primary" onclick="saveSettings()">Simpan</button></div>`;
-}
-function saveSettings(){
-  const wa=document.getElementById('wa').value.replace(/\D/g,'');
-  const pin=document.getElementById('newpin').value.trim();
-  if(!wa||!pin){alert('WhatsApp dan PIN wajib diisi.');return}
-  settings.wa=wa;settings.pin=pin;
-  saveSet();alert('Pengaturan tersimpan.');adminPanel();
-}
-document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
-renderStoreBranding();
-renderProducts();
+async function dashboard(){return renderAdminPage()}
+async function loadAdminData(){await loadData();if(db){let r=await db.from("orders").select("*").order("created_at",{ascending:false}).limit(100);if(!r.error)orders=r.data||[]}}
+async function storeAdmin(){return renderAdminPage()}
+async function productAdmin(){return renderAdminPage()}
+async function orderAdmin(){return renderAdminPage()}
+function storeForm(id){let s=stores.find(x=>x.id===id)||{};showModal(`<h2>${id?"Edit":"Tambah"} Toko</h2><div class="field"><label>Nama toko</label><input id="sName" value="${esc(s.name||"")}"></div><div class="field"><label>Nomor WhatsApp (contoh 0812...)</label><input id="sWa" value="${esc(s.whatsapp||"")}"></div><div class="field"><label>Alamat toko</label><textarea id="sAddress">${esc(s.address||"")}</textarea></div><div class="field"><label>URL gambar/logo toko</label><input id="sImage" value="${esc(s.image_url||"")}" placeholder="https://..."></div><div class="field"><label>Deskripsi</label><input id="sDesc" value="${esc(s.description||"")}"></div><button onclick="saveStore('${id||""}')">Simpan Toko</button>`)}
+async function saveStore(id){let v={name:document.getElementById("sName").value.trim(),whatsapp:document.getElementById("sWa").value.trim(),address:document.getElementById("sAddress").value.trim(),image_url:document.getElementById("sImage").value.trim(),description:document.getElementById("sDesc").value.trim()};if(!v.name||!v.whatsapp||!v.address)return alert("Nama toko, WhatsApp, dan alamat wajib diisi.");let r=id?await db.from("stores").update(v).eq("id",id):await db.from("stores").insert(v);if(r.error)return alert(r.error.message);closeModal();await renderAdminPage();render()}
+async function deleteStore(id){if(!confirm("Hapus toko ini?"))return;let r=await db.from("stores").update({is_active:false}).eq("id",id);if(r.error)alert(r.error.message);await renderAdminPage();await loadData();render()}
+async function productAdmin(){await loadAdminData();document.getElementById("adminContent").innerHTML=`<div class="adminhead"><h2>Kelola Produk</h2><button onclick="productForm()">+ Tambah Produk</button></div><div class="tablewrap"><table><thead><tr><th>Produk</th><th>Toko</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody>${products.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(stores.find(s=>s.id===p.store_id)?.name||"-")}</td><td>${money(p.price)}</td><td>${p.stock}</td><td><button class="secondary" onclick="productForm('${p.id}')">Edit</button> <button class="danger" onclick="deleteProduct('${p.id}')">Hapus</button></td></tr>`).join("")}</tbody></table></div>`}
+function productForm(id){let p=products.find(x=>x.id===id)||{};showModal(`<h2>${id?"Edit":"Tambah"} Produk</h2><div class="field"><label>Toko</label><select id="pStore">${stores.map(s=>`<option value="${s.id}" ${s.id===p.store_id?"selected":""}>${esc(s.name)}</option>`).join("")}</select></div><div class="field"><label>Nama produk</label><input id="pName" value="${esc(p.name||"")}"></div><div class="row"><div class="field"><label>Harga (Rp)</label><input id="pPrice" type="number" min="0" value="${p.price||""}"></div><div class="field"><label>Stok</label><input id="pStock" type="number" min="0" value="${p.stock??0}"></div></div><div class="row"><div class="field"><label>Kategori</label><input id="pCategory" value="${esc(p.category||"")}"></div><div class="field"><label>URL gambar produk</label><input id="pImage" value="${esc(p.image_url||"")}" placeholder="https://..."></div></div><button onclick="saveProduct('${id||""}')">Simpan Produk</button>`)}
+async function saveProduct(id){let v={store_id:document.getElementById("pStore").value,name:document.getElementById("pName").value.trim(),price:Number(document.getElementById("pPrice").value),stock:Number(document.getElementById("pStock").value),category:document.getElementById("pCategory").value.trim(),image_url:document.getElementById("pImage").value.trim()};if(!v.store_id||!v.name||v.price<0||v.stock<0)return alert("Lengkapi data produk dengan benar.");let r=id?await db.from("products").update(v).eq("id",id):await db.from("products").insert(v);if(r.error)return alert(r.error.message);closeModal();await renderAdminPage();await loadData();render()}
+async function deleteProduct(id){if(!confirm("Hapus produk ini?"))return;let r=await db.from("products").update({is_active:false}).eq("id",id);if(r.error)alert(r.error.message);await renderAdminPage();await loadData();render()}
+async function orderAdmin(){await loadAdminData();document.getElementById("adminContent").innerHTML=`<div class="adminhead"><h2>Pesanan</h2><button class="secondary" onclick="orderAdmin()">Muat ulang</button></div><div class="tablewrap"><table><thead><tr><th>Tanggal</th><th>Pemesan</th><th>Toko</th><th>Total</th><th>Status</th></tr></thead><tbody>${orders.map(o=>`<tr><td>${new Date(o.created_at).toLocaleString("id-ID")}</td><td>${esc(o.customer_name)}</td><td>${esc(stores.find(s=>s.id===o.store_id)?.name||"-")}</td><td>${money(o.total)}</td><td>${esc(o.status)}</td></tr>`).join("")||"<tr><td colspan=5>Belum ada pesanan.</td></tr>"}</tbody></table></div>`}
+init();
 </script>
-</body>
-</html>
+</body></html>
