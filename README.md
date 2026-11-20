@@ -1,1 +1,0 @@
-# bariklanaweb.github.io
