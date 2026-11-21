@@ -63,8 +63,8 @@
 <div id="cartFloat" class="cartbar hidden"><span><b id="floatCount">0</b> barang · <b id="floatTotal">Rp0</b></span><button onclick="openCart()">Lihat Keranjang</button></div>
 <div id="modal" class="modal hidden" onclick="if(event.target===this)closeModal()"><div class="dialog"><button class="close" onclick="closeModal()">✕</button><div id="modalContent"></div></div></div>
 <script>
-const SUPABASE_URL="https://YOUR_PROJECT.supabase.co";
-const SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL="https://mdzdpicsmbqeapsxubfr.supabase.co/rest/v1/";
+const SUPABASE_ANON_KEY="sb_publishable_leq0YuGXSjdz8jSpy5ajPw_agwSgs2L";
 const ADMIN_EMAIL="admin@bariklana.local"; // Email internal akun admin Supabase
 let db=null,session=null,stores=[],products=[],orders=[],cart=[],activeAdminTab="dashboard";
 const money=n=>"Rp"+Number(n||0).toLocaleString("id-ID");
