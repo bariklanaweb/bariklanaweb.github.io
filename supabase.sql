@@ -152,5 +152,5 @@ grant select on public.order_items to authenticated;
 
 -- Buat akun melalui Authentication > Users:
 -- Email: admin@bariklana.local
--- Password: PIN admin 6-12 angka yang kuat.
+-- Password: PIN admin 1234 angka yang kuat.
 -- Jangan aktifkan sign-up publik dan jangan pernah taruh service_role key di HTML.
